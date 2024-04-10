@@ -1,0 +1,31 @@
+version: "3.3"
+services:
+
+  db_auth:
+    restart: always # перезапуск в случае ошибок
+    image: postgres:15.2
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: db_auth
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/ # сохранение данных с бд при перезапуске
+    ports:
+      - "6100:6100" # порт внутри контейенера:снаружи
+    expose:
+      - "6100"
+    command:
+      - "postgres"
+      - "-c"
+      - "port=6100"
+
+  auth_service:
+    build:
+      context: .
+    container_name: auth_service
+    env_file:
+      - .env
+    ports:
+      - "6101:6101"
+    depends_on:
+      - db_auth
