@@ -1,5 +1,7 @@
 # API Documentation
 
+## Auth Service:
+Port: 6101
 ## Register Endpoint
 ### Description:
 This endpoint is used to register a new user.
