@@ -4,28 +4,39 @@ services:
   db_auth:
     restart: always # перезапуск в случае ошибок
     image: postgres:15.2
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: ${POSTGRES_AUTH_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_AUTH_PASSWORD}
       POSTGRES_DB: db_auth
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/ # сохранение данных с бд при перезапуске
     ports:
-      - "6100:6100" # порт внутри контейенера:снаружи
+      - ${POSTGRES_AUTH_PORT}:${POSTGRES_AUTH_PORT} # порт внутри контейенера:снаружи
     expose:
-      - "6100"
+      - ${POSTGRES_AUTH_PORT}
     command:
       - "postgres"
       - "-c"
-      - "port=6100"
+      - "port=${POSTGRES_AUTH_PORT}"
+    networks:
+      -auth_network:
 
   auth_service:
     build:
-      context: .
+      context: ./auth
+      dockerfile: Dockerfile
     container_name: auth_service
     env_file:
       - .env
     ports:
-      - "6101:6101"
+      - ${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}
     depends_on:
       - db_auth
+    networks:
+      -auth_network:
+
+networks:
+  -auth_network:
+    driver: bridge
