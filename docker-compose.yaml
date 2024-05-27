@@ -1,7 +1,8 @@
-version: "3.3"
+version: "3.9"
 services:
 
   db_auth:
+    container_name: db_auth
     restart: always # перезапуск в случае ошибок
     image: postgres:15.2
     env_file:
@@ -21,7 +22,7 @@ services:
       - "-c"
       - "port=${POSTGRES_AUTH_PORT}"
     networks:
-      -auth_network:
+      - auth
 
   auth_service:
     build:
@@ -35,8 +36,8 @@ services:
     depends_on:
       - db_auth
     networks:
-      -auth_network:
+      - auth
 
 networks:
-  -auth_network:
-    driver: bridge
+  auth:
+    driver: host

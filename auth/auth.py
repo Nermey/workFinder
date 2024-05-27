@@ -16,6 +16,11 @@ app.add_middleware(CORSMiddleware,
                    )
 
 
+@app.on_event("startup")
+async def startup_event():
+    await Auth_obj.create_table()
+
+
 @app.post("/register/user")
 async def register_user(user: AuthObj):
     print(await Auth_obj.check_user_exist(user.email))
@@ -40,5 +45,3 @@ async def register_company(company: AuthObj):
         await Auth_obj.add_new_user(company.email, company.password)
         raise HTTPException(status_code=201, detail="success register")
     raise HTTPException(status_code=401, detail="user is already exist")
-
-asyncio.run(Auth_obj.create_table())

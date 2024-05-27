@@ -16,7 +16,7 @@ class Settings:
 
     @property
     def DATA_BASE_AUTH_URL(self):
-        return f"postgresql+asyncpg://{self.POSTGRES_AUTH_USER}:{self.POSTGRES_AUTH_PASSWORD}@{self.AUTH_HOST}:{self.POSTGRES_AUTH_PORT}/db_auth"
+        return f"postgresql+asyncpg://{self.POSTGRES_AUTH_USER}:{self.POSTGRES_AUTH_PASSWORD}@db_auth:{self.POSTGRES_AUTH_PORT}/db_auth"
 
 
 settings = Settings()
