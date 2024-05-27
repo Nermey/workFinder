@@ -1,14 +1,16 @@
 FROM python:3.12
 
-WORKDIR /app
+WORKDIR /auth_service
 
-COPY requirements.txt .
-COPY .env .
+COPY requirements.txt ./requirements.txt
 
-RUN export $(cat .env | xargs)
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV AUTH_SERVICE_PORT=$AUTH_SERVICE_PORT
+ENV AUTH_HOST=$AUTH_HOST
 
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 
-COPY auth .
+COPY . /auth_service
 
-CMD auth.py
+CMD uvicorn auth:app --host $AUTH_HOST --port $AUTH_SERVICE_PORT

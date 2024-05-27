@@ -9,7 +9,7 @@ class UsersAuth(Base):
     password: Mapped[str]
 
 
-class Company(Base):
+class CompanyAuth(Base):
     __tablename__ = "company"
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str] = mapped_column(unique=True)
