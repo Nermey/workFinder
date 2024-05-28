@@ -1,5 +1,6 @@
 from database import session, engine, Base
-from sqlalchemy import select
+from sqlalchemy import Index, select
+from sqlalchemy.schema import CreateIndex
 from models import AuthDB
 
 
@@ -9,6 +10,9 @@ class Auth_obj:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
+            email_index = Index("idx_email", AuthDB.email)
+            create_email_index = CreateIndex(email_index)
+            await conn.execute(create_email_index)
 
     @staticmethod
     async def add_new_user(email, password):
