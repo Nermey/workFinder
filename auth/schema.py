@@ -8,20 +8,13 @@ class AuthObj(BaseModel):
 
 class UserDTO(BaseModel):
     id: int
+    type: str
 
 
-class AddNewUser(BaseModel):
+class AddNewAccount(BaseModel):
+    name: str
+    bio: str
     email: str
     password: str
-    name: str
-    surname: str
-    bio: str
     phone: str
-
-
-class AddNewCompany(BaseModel):
-    name: str
-    email: str
-    phone: str
-    password: str
-    bio: str
+    type: str

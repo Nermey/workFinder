@@ -2,6 +2,7 @@ from database import session, engine, Base
 from sqlalchemy import Index, select
 from sqlalchemy.schema import CreateIndex
 from models import AuthDB
+from schema import UserDTO
 
 
 class Auth_obj:
@@ -15,9 +16,9 @@ class Auth_obj:
             await conn.execute(create_email_index)
 
     @staticmethod
-    async def add_new_user(email, password):
+    async def add_new_user(email, password, acc_type):
         async with session() as conn:
-            user_obj = AuthDB(email=email, password=password)
+            user_obj = AuthDB(email=email, password=password, type=acc_type)
             conn.add(user_obj)
             await conn.commit()
 
@@ -35,9 +36,11 @@ class Auth_obj:
             query = select(AuthDB).filter_by(email=email, password=password)
             res = await conn.execute(query)
             user = res.scalars().all()
-            #user_dto = [UserDTO.model_validate(row, from_attributes=True) for row in user]
-            #return [len(user) != 0, user_dto[0].id]
-            return len(user) != 0
+            user_dto = [UserDTO.model_validate(row, from_attributes=True) for row in user]
+            if not user_dto:
+                return []
+            return [len(user) != 0, {"id": user_dto[0].id,
+                                     "type:": user_dto[0].type}]
 
     @staticmethod
     async def change_email(user_id, new_email):

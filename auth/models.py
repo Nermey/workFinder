@@ -7,3 +7,4 @@ class AuthDB(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str]
     password: Mapped[str]
+    type: Mapped[str]
